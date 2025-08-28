@@ -1,0 +1,226 @@
+<Window x:Class="AeroFleetManagerPro.Views.AircraftEditWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:converters="clr-namespace:AeroFleetManagerPro.Converters"
+        Title="{Binding WindowTitle}" 
+        Height="600" Width="500"
+        WindowStartupLocation="CenterOwner"
+        Background="#F5F5F5">
+    
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Заголовок -->
+        <TextBlock Grid.Row="0" 
+                   Text="{Binding WindowTitle}" 
+                   FontSize="24" 
+                   FontWeight="Bold" 
+                   Foreground="#021C1E"
+                   Margin="0,0,0,20"/>
+
+        <!-- Форма -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <!-- Основная информация -->
+                <Border Style="{StaticResource CardStyle}" Margin="0,0,0,10">
+                    <StackPanel>
+                        <TextBlock Text="Основна інформація" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
+                        
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,10,10">
+                                <TextBlock Text="Реєстраційний номер*" FontWeight="Medium" Margin="0,0,0,5"/>
+                                <TextBox Text="{Binding Aircraft.RegistrationNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                         Background="White" BorderBrush="#DDDDDD" BorderThickness="1" Padding="8"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="0" Grid.Column="1" Margin="10,0,0,10">
+                                <TextBlock Text="Тип літака*" FontWeight="Medium" Margin="0,0,0,5"/>
+                                <ComboBox Text="{Binding Aircraft.Type, Mode=TwoWay}"
+                                          IsEditable="True"
+                                          Background="White" BorderBrush="#DDDDDD" BorderThickness="1" Padding="8">
+                                    <ComboBoxItem Content="Пасажирський"/>
+                                    <ComboBoxItem Content="Вантажний"/>
+                                    <ComboBoxItem Content="Регіональний"/>
+                                    <ComboBoxItem Content="Бізнес-авіація"/>
+                                </ComboBox>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,10,10">
+                                <TextBlock Text="Виробник*" FontWeight="Medium" Margin="0,0,0,5"/>
+                                <ComboBox Text="{Binding Aircraft.Manufacturer, Mode=TwoWay}"
+                                          IsEditable="True"
+                                          Background="White" BorderBrush="#DDDDDD" BorderThickness="1" Padding="8">
+                                    <ComboBoxItem Content="Boeing"/>
+                                    <ComboBoxItem Content="Airbus"/>
+                                    <ComboBoxItem Content="Embraer"/>
+                                    <ComboBoxItem Content="Bombardier"/>
+                                    <ComboBoxItem Content="ATR"/>
+                                    <ComboBoxItem Content="Antonov"/>
+                                </ComboBox>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="1" Grid.Column="1" Margin="10,0,0,10">
+                                <TextBlock Text="Модель*" FontWeight="Medium" Margin="0,0,0,5"/>
+                                <TextBox Text="{Binding Aircraft.Model, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                         Background="White" BorderBrush="#DDDDDD" BorderThickness="1" Padding="8"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="2" Grid.Column="0" Margin="0,0,10,10">
+                                <TextBlock Text="Рік випуску*" FontWeight="Medium" Margin="0,0,0,5"/>
+                                <TextBox Text="{Binding Aircraft.YearOfManufacture, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                         Background="White" BorderBrush="#DDDDDD" BorderThickness="1" Padding="8"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="2" Grid.Column="1" Margin="10,0,0,10">
+                                <TextBlock Text="Статус" FontWeight="Medium" Margin="0,0,0,5"/>
+                                <ComboBox SelectedValue="{Binding Aircraft.Status, Mode=TwoWay}"
+                                          SelectedValuePath="Tag"
+                                          DisplayMemberPath="Content"
+                                          Background="White" BorderBrush="#DDDDDD" BorderThickness="1" Padding="8">
+                                    <ComboBoxItem Content="Активний" Tag="Active"/>
+                                    <ComboBoxItem Content="На обслуговуванні" Tag="Maintenance"/>
+                                    <ComboBoxItem Content="На землі" Tag="Grounded"/>
+                                    <ComboBoxItem Content="Зарезервований" Tag="Reserved"/>
+                                    <ComboBoxItem Content="Списаний" Tag="Retired"/>
+                                </ComboBox>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Технические характеристики -->
+                <Border Style="{StaticResource CardStyle}" Margin="0,0,0,10">
+                    <StackPanel>
+                        <TextBlock Text="Технічні характеристики" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
+                        
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,10,10">
+                                <TextBlock Text="Пасажиромісткість" FontWeight="Medium" Margin="0,0,0,5"/>
+                                <TextBox Text="{Binding Aircraft.PassengerCapacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                         Background="White" BorderBrush="#DDDDDD" BorderThickness="1" Padding="8"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="0" Grid.Column="1" Margin="10,0,0,10">
+                                <TextBlock Text="Дальність (км)" FontWeight="Medium" Margin="0,0,0,5"/>
+                                <TextBox Text="{Binding Aircraft.Range, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                         Background="White" BorderBrush="#DDDDDD" BorderThickness="1" Padding="8"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,10,10">
+                                <TextBlock Text="Наліт годин" FontWeight="Medium" Margin="0,0,0,5"/>
+                                <TextBox Text="{Binding Aircraft.FlightHours, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                         Background="White" BorderBrush="#DDDDDD" BorderThickness="1" Padding="8"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="1" Grid.Column="1" Margin="10,0,0,10">
+                                <TextBlock Text="Кількість циклів" FontWeight="Medium" Margin="0,0,0,5"/>
+                                <TextBox Text="{Binding Aircraft.FlightCycles, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                         Background="White" BorderBrush="#DDDDDD" BorderThickness="1" Padding="8"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Локации и даты -->
+                <Border Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="Розташування та обслуговування" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
+                        
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,10,10">
+                                <TextBlock Text="Базове розташування" FontWeight="Medium" Margin="0,0,0,5"/>
+                                <ComboBox Text="{Binding Aircraft.BaseLocation, Mode=TwoWay}"
+                                          IsEditable="True"
+                                          Background="White" BorderBrush="#DDDDDD" BorderThickness="1" Padding="8">
+                                    <ComboBoxItem Content="Київ (Бориспіль)"/>
+                                    <ComboBoxItem Content="Київ (Жуляни)"/>
+                                    <ComboBoxItem Content="Львів"/>
+                                    <ComboBoxItem Content="Одеса"/>
+                                    <ComboBoxItem Content="Харків"/>
+                                    <ComboBoxItem Content="Дніпро"/>
+                                </ComboBox>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="0" Grid.Column="1" Margin="10,0,0,10">
+                                <TextBlock Text="Поточне розташування" FontWeight="Medium" Margin="0,0,0,5"/>
+                                <ComboBox Text="{Binding Aircraft.CurrentLocation, Mode=TwoWay}"
+                                          IsEditable="True"
+                                          Background="White" BorderBrush="#DDDDDD" BorderThickness="1" Padding="8">
+                                    <ComboBoxItem Content="Київ (Бориспіль)"/>
+                                    <ComboBoxItem Content="Київ (Жуляни)"/>
+                                    <ComboBoxItem Content="Львів"/>
+                                    <ComboBoxItem Content="Одеса"/>
+                                    <ComboBoxItem Content="Харків"/>
+                                    <ComboBoxItem Content="Дніпро"/>
+                                </ComboBox>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,10,10">
+                                <TextBlock Text="Дата придбання" FontWeight="Medium" Margin="0,0,0,5"/>
+                                <DatePicker SelectedDate="{Binding Aircraft.AcquisitionDate, Mode=TwoWay}"
+                                           Background="White"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="1" Grid.Column="1" Margin="10,0,0,10">
+                                <TextBlock Text="Наступне ТО" FontWeight="Medium" Margin="0,0,0,5"/>
+                                <DatePicker SelectedDate="{Binding Aircraft.NextMaintenanceDate, Mode=TwoWay}"
+                                           Background="White"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Кнопки -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+            <Button Content="Скасувати" 
+                    Command="{Binding CancelCommand}"
+                    Background="White" 
+                    BorderBrush="#DDDDDD" 
+                    BorderThickness="1" 
+                    Padding="20,10" 
+                    Margin="0,0,10,0"/>
+            
+            <Button Content="Зберегти" 
+                    Command="{Binding SaveCommand}"
+                    Style="{StaticResource PrimaryButton}"
+                    Padding="20,10"/>
+        </StackPanel>
+    </Grid>
+</Window>

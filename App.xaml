@@ -1,0 +1,153 @@
+<Application x:Class="AeroFleetManagerPro.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:AeroFleetManagerPro.Converters">
+    <Application.Resources>
+        <ResourceDictionary>
+            <!-- Конвертеры -->
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+            <converters:InvertBoolConverter x:Key="InvertBoolConverter" />
+            <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+            <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
+            <converters:StatusToBrushConverter x:Key="StatusToBrushConverter" />
+            <converters:FlightStatusToBrushConverter x:Key="FlightStatusToBrushConverter" />
+            <converters:MaintenanceStatusToBrushConverter x:Key="MaintenanceStatusToBrushConverter" />
+            <converters:DaysUntilConverter x:Key="DaysUntilConverter" />
+            
+            <!-- Основные стили з новою колірною схемою -->
+            <Style x:Key="CardStyle" TargetType="Border">
+                <Setter Property="Background" Value="White"/>
+                <Setter Property="BorderBrush" Value="#6FB98F"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="CornerRadius" Value="4"/>
+                <Setter Property="Padding" Value="15"/>
+                <Setter Property="Margin" Value="5"/>
+                <Setter Property="Effect">
+                    <Setter.Value>
+                        <DropShadowEffect ShadowDepth="2" BlurRadius="4" Opacity="0.3" Color="#2C7873"/>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            
+            <Style x:Key="HeaderStyle" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="24"/>
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="Foreground" Value="#021C1E"/>
+            </Style>
+            
+            <Style x:Key="PrimaryButton" TargetType="Button">
+                <Setter Property="Background" Value="#2C7873"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Padding" Value="12,8"/>
+                <Setter Property="Margin" Value="5"/>
+                <Setter Property="FontWeight" Value="Medium"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}" 
+                                    CornerRadius="4" 
+                                    Padding="{TemplateBinding Padding}">
+                                <ContentPresenter HorizontalAlignment="Center" 
+                                                  VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#6FB98F"/>
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter Property="Background" Value="#004445"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            
+            <!-- Стилі з новою колірною схемою для покращення контрастності -->
+            <Style TargetType="TextBlock">
+                <Setter Property="Foreground" Value="#021C1E"/>
+            </Style>
+            
+            <Style TargetType="Label">
+                <Setter Property="Foreground" Value="#021C1E"/>
+            </Style>
+            
+            <Style TargetType="TextBox">
+                <Setter Property="Foreground" Value="#021C1E"/>
+                <Setter Property="Background" Value="White"/>
+                <Setter Property="BorderBrush" Value="#6FB98F"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Padding" Value="8"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="TextBox">
+                            <Border Background="{TemplateBinding Background}" 
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="3" 
+                                    Padding="{TemplateBinding Padding}">
+                                <ScrollViewer x:Name="PART_ContentHost"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsFocused" Value="True">
+                                    <Setter Property="BorderBrush" Value="#2C7873"/>
+                                    <Setter Property="BorderThickness" Value="2"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            
+            <Style TargetType="ComboBox">
+                <Setter Property="Foreground" Value="#021C1E"/>
+                <Setter Property="Background" Value="White"/>
+                <Setter Property="BorderBrush" Value="#6FB98F"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Padding" Value="8"/>
+            </Style>
+            
+            <Style TargetType="DatePicker">
+                <Setter Property="Foreground" Value="#021C1E"/>
+                <Setter Property="Background" Value="White"/>
+                <Setter Property="BorderBrush" Value="#6FB98F"/>
+                <Setter Property="BorderThickness" Value="1"/>
+            </Style>
+            
+            <Style TargetType="Button">
+                <Setter Property="Foreground" Value="#021C1E"/>
+                <Setter Property="Background" Value="White"/>
+                <Setter Property="BorderBrush" Value="#6FB98F"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Padding" Value="12,8"/>
+                <Setter Property="Margin" Value="5"/>
+                <Setter Property="FontWeight" Value="Medium"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}" 
+                                    CornerRadius="4" 
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    Padding="{TemplateBinding Padding}">
+                                <ContentPresenter HorizontalAlignment="Center" 
+                                                  VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#6FB98F"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter Property="Background" Value="#2C7873"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

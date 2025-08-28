@@ -1,0 +1,343 @@
+<UserControl x:Class="AeroFleetManagerPro.Views.MaintenanceView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:converters="clr-namespace:AeroFleetManagerPro.Converters"
+             mc:Ignorable="d">
+    
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <DockPanel Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock Text="Управління обслуговуванням" 
+                     FontSize="28" 
+                     FontWeight="Bold" 
+                     VerticalAlignment="Center"
+                     Foreground="#2196F3"/>
+            
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Style="{StaticResource PrimaryButton}"
+                      Command="{Binding AddMaintenanceRecordCommand}"
+                      Margin="5">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="+" Margin="0,0,5,0"/>
+                        <TextBlock Text="Додати запис"/>
+                    </StackPanel>
+                </Button>
+                
+                <Button Background="White" BorderBrush="#2196F3" BorderThickness="1" Padding="12,8"
+                      Command="{Binding GenerateMaintenanceScheduleCommand}"
+                      Margin="5">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="⚙" Margin="0,0,5,0"/>
+                        <TextBlock Text="Згенерувати розклад"/>
+                    </StackPanel>
+                </Button>
+                
+                <Button Background="White" BorderBrush="#2196F3" BorderThickness="1" Padding="12,8"
+                      Command="{Binding RefreshDataCommand}"
+                      Margin="5">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="↻" Margin="0,0,5,0"/>
+                        <TextBlock Text="Оновити"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </DockPanel>
+
+        <UniformGrid Grid.Row="1" Columns="4" Margin="0,0,0,20">
+            <Border Margin="5" Padding="15">
+                <StackPanel>
+                    <TextBlock Text="⏰!" 
+                                           FontSize="24" 
+                                           Foreground="Orange"/>
+                    <TextBlock Text="{Binding UpcomingMaintenance.Count}" 
+                             FontSize="20" 
+                             FontWeight="Bold" 
+                             HorizontalAlignment="Center"/>
+                    <TextBlock Text="Заплановано" 
+                             FontSize="11" 
+                             Foreground="Gray" 
+                             HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+
+            <Border Margin="5" Padding="15">
+                <StackPanel>
+                    <TextBlock Text="⚠" 
+                                           FontSize="24" 
+                                           Foreground="Red"/>
+                    <TextBlock Text="{Binding OverdueMaintenance.Count}" 
+                             FontSize="20" 
+                             FontWeight="Bold" 
+                             HorizontalAlignment="Center"/>
+                    <TextBlock Text="Прострочено" 
+                             FontSize="11" 
+                             Foreground="Gray" 
+                             HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+
+            <Border Margin="5" Padding="15">
+                <StackPanel>
+                    <TextBlock Text="✓" 
+                                           FontSize="24" 
+                                           Foreground="Green"/>
+                    <TextBlock Text="{Binding MaintenanceRecords.Count}" 
+                             FontSize="20" 
+                             FontWeight="Bold" 
+                             HorizontalAlignment="Center"/>
+                    <TextBlock Text="Всього записів" 
+                             FontSize="11" 
+                             Foreground="Gray" 
+                             HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+
+            <Border Margin="5" Padding="15">
+                <StackPanel>
+                    <TextBlock Text="$" 
+                                           FontSize="24" 
+                                           Foreground="#2196F3"/>
+                    <TextBlock Text="{Binding TotalMaintenanceCost, StringFormat='${0:N0}'}" 
+                             FontSize="20" 
+                             FontWeight="Bold" 
+                             HorizontalAlignment="Center"/>
+                    <TextBlock Text="Загальна вартість (12м)" 
+                             FontSize="11" 
+                             Foreground="Gray" 
+                             HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+        </UniformGrid>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0" Grid.Column="0" Margin="5">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Top" Margin="20,20,20,15">
+                        <DockPanel>
+                            <TextBlock Text="Записи обслуговування" 
+                                     FontSize="18" 
+                                     FontWeight="Medium"/>
+                            <ComboBox ItemsSource="{Binding MaintenanceStatusOptions}"
+                                    SelectedItem="{Binding FilterStatus}"
+                                    Width="120"
+                                    HorizontalAlignment="Right"
+                                    Background="White" BorderBrush="#DDDDDD" BorderThickness="1" Padding="8"/>
+                        </DockPanel>
+                        <ComboBox ItemsSource="{Binding Aircraft}"
+                                DisplayMemberPath="RegistrationNumber"
+                                SelectedItem="{Binding SelectedAircraft}"
+                                ToolTip="Фільтр по літаку"
+                                Background="White" BorderBrush="#DDDDDD" BorderThickness="1" Padding="8"
+                                Width="200"
+                                HorizontalAlignment="Left"
+                                Margin="0,10,0,0"/>
+                    </StackPanel>
+                    
+                    <DataGrid ItemsSource="{Binding MaintenanceRecords}"
+                            SelectedItem="{Binding SelectedRecord}"
+                            AutoGenerateColumns="False"
+                            IsReadOnly="True"
+                            GridLinesVisibility="Horizontal"
+                            HeadersVisibility="Column"
+                            Margin="20,0,20,20">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Літак" 
+                                              Binding="{Binding Aircraft.RegistrationNumber}" 
+                                              Width="80"/>
+                            <DataGridTextColumn Header="Тип" 
+                                              Binding="{Binding Type}" 
+                                              Width="80"/>
+                            <DataGridTextColumn Header="Опис" 
+                                              Binding="{Binding Description}" 
+                                              Width="150"/>
+                            <DataGridTextColumn Header="Планова дата" 
+                                              Binding="{Binding ScheduledDate, StringFormat='{}{0:dd/MM/yy}'}" 
+                                              Width="70"/>
+                            <DataGridTemplateColumn Header="Статус" Width="80">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Border Background="{Binding Status, Converter={StaticResource MaintenanceStatusToBrushConverter}}"
+                                              CornerRadius="3"
+                                              Padding="6,2">
+                                            <TextBlock Text="{Binding Status}"
+                                                     Foreground="White"
+                                                     FontSize="10"
+                                                     HorizontalAlignment="Center"/>
+                                        </Border>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="Вартість" 
+                                              Binding="{Binding Cost, StringFormat='${0:N0}'}" 
+                                              Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </Border>
+
+            <Border Grid.Row="0" Grid.Column="1" Margin="5">
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Top" 
+                             Text="Деталі запису" 
+                             FontSize="18" 
+                             FontWeight="Medium" 
+                             Margin="20,20,20,15"/>
+                    
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel Margin="20,0,20,20"
+                                  Visibility="{Binding SelectedRecord, Converter={StaticResource NullToVisibilityConverter}}">
+                            
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                <Button Style="{StaticResource PrimaryButton}"
+                                      Command="{Binding EditMaintenanceRecordCommand}"
+                                      Margin="0,0,5,0">
+                                    <TextBlock Text="✏"/>
+                                </Button>
+                                
+                                <Button Background="White" BorderBrush="Green" BorderThickness="1" Padding="12,8"
+                                      Command="{Binding CompleteMaintenanceRecordCommand}"
+                                      Foreground="Green">
+                                    <TextBlock Text="✓"/>
+                                </Button>
+                            </StackPanel>
+                            
+                            <Separator Margin="0,0,0,15"/>
+                            
+                            <TextBlock>
+                                <Run Text="Type:" FontWeight="Medium"/>
+                                <Run Text="{Binding SelectedRecord.Type}"/>
+                            </TextBlock>
+                            
+                            <TextBlock Margin="0,5,0,0" TextWrapping="Wrap">
+                                <Run Text="Description:" FontWeight="Medium"/>
+                                <LineBreak/>
+                                <Run Text="{Binding SelectedRecord.Description}"/>
+                            </TextBlock>
+                            
+                            <TextBlock Margin="0,5,0,0">
+                                <Run Text="Scheduled:" FontWeight="Medium"/>
+                                <Run Text="{Binding SelectedRecord.ScheduledDate, StringFormat='{}{0:dd/MM/yyyy}'}"/>
+                            </TextBlock>
+                            
+                            <TextBlock Margin="0,5,0,0"
+                                     Visibility="{Binding SelectedRecord.ActualDate, Converter={StaticResource NullToVisibilityConverter}}">
+                                <Run Text="Completed:" FontWeight="Medium"/>
+                                <Run Text="{Binding SelectedRecord.ActualDate, StringFormat='{}{0:dd/MM/yyyy}'}"/>
+                            </TextBlock>
+                            
+                            <TextBlock Margin="0,5,0,0">
+                                <Run Text="Location:" FontWeight="Medium"/>
+                                <Run Text="{Binding SelectedRecord.Location}"/>
+                            </TextBlock>
+                            
+                            <TextBlock Margin="0,5,0,0">
+                                <Run Text="Duration:" FontWeight="Medium"/>
+                                <Run Text="{Binding SelectedRecord.DurationHours}"/>
+                                <Run Text="hours"/>
+                            </TextBlock>
+                            
+                            <TextBlock Margin="0,5,0,0">
+                                <Run Text="Cost:" FontWeight="Medium"/>
+                                <Run Text="{Binding SelectedRecord.Cost, StringFormat='${0:N2}'}"/>
+                            </TextBlock>
+                            
+                            <TextBlock Margin="0,5,0,0"
+                                     Visibility="{Binding SelectedRecord.PerformedBy, Converter={StaticResource StringToVisibilityConverter}}">
+                                <Run Text="Performed by:" FontWeight="Medium"/>
+                                <Run Text="{Binding SelectedRecord.PerformedBy}"/>
+                            </TextBlock>
+                        </StackPanel>
+                    </ScrollViewer>
+                </DockPanel>
+            </Border>
+
+            <Border Grid.Row="1" Grid.Column="0" Margin="5">
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Top" 
+                             Text="Найближче обслуговування" 
+                             FontSize="18" 
+                             FontWeight="Medium" 
+                             Margin="20,20,20,15"/>
+                    
+                    <DataGrid ItemsSource="{Binding UpcomingMaintenance}"
+                            AutoGenerateColumns="False"
+                            IsReadOnly="True"
+                            GridLinesVisibility="Horizontal"
+                            HeadersVisibility="Column"
+                            Margin="20,0,20,20">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Літак" 
+                                              Binding="{Binding Aircraft.RegistrationNumber}" 
+                                              Width="80"/>
+                            <DataGridTextColumn Header="Тип" 
+                                              Binding="{Binding Type}" 
+                                              Width="80"/>
+                            <DataGridTextColumn Header="Дата виконання" 
+                                              Binding="{Binding ScheduledDate, StringFormat='{}{0:dd/MM/yyyy}'}" 
+                                              Width="80"/>
+                            <DataGridTextColumn Header="Опис" 
+                                              Binding="{Binding Description}" 
+                                              Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </Border>
+
+            <Border Grid.Row="1" Grid.Column="1" Margin="5">
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Top" 
+                             Text="Прострочене обслуговування" 
+                             FontSize="18" 
+                             FontWeight="Medium" 
+                             Margin="20,20,20,15"
+                             Foreground="Red"/>
+                    
+                    <ListView ItemsSource="{Binding OverdueMaintenance}"
+                            Margin="20,0,20,20">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="LightCoral" 
+                                      CornerRadius="5" 
+                                      Padding="10" 
+                                      Margin="0,2">
+                                    <StackPanel>
+                                        <TextBlock FontWeight="Bold">
+                                            <Run Text="{Binding Aircraft.RegistrationNumber}"/>
+                                            <Run Text="-"/>
+                                            <Run Text="{Binding Type}"/>
+                                        </TextBlock>
+                                        <TextBlock Text="{Binding Description}" 
+                                                 TextWrapping="Wrap" 
+                                                 Margin="0,2,0,0"/>
+                                        <TextBlock Foreground="DarkRed" 
+                                                 Margin="0,2,0,0">
+                                            <Run Text="Due:"/>
+                                            <Run Text="{Binding ScheduledDate, StringFormat='{}{0:dd/MM/yyyy}'}"/>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </DockPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

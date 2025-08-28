@@ -1,0 +1,135 @@
+<UserControl x:Class="AeroFleetManagerPro.Views.DashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:converters="clr-namespace:AeroFleetManagerPro.Converters">
+    
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Заголовок -->
+            <DockPanel Grid.Row="0" Margin="0,0,0,20">
+                <TextBlock Text="Панель управління" 
+                         FontSize="28" 
+                         FontWeight="Bold" 
+                         VerticalAlignment="Center"
+                         Foreground="#2196F3"/>
+                
+                <Button Style="{StaticResource PrimaryButton}"
+                      Command="{Binding RefreshDashboardCommand}"
+                      HorizontalAlignment="Right">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="↻" Margin="0,0,5,0"/>
+                        <TextBlock Text="Оновити"/>
+                    </StackPanel>
+                </Button>
+            </DockPanel>
+
+            <!-- KPI картки -->
+            <UniformGrid Grid.Row="1" Columns="4" Margin="0,0,0,20">
+                
+                <Border Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="✈" 
+                                               FontSize="40" 
+                                               Foreground="#2196F3"/>
+                        <TextBlock Text="{Binding TotalAircraft}" 
+                                 FontSize="32" 
+                                 FontWeight="Bold" 
+                                 HorizontalAlignment="Center"/>
+                        <TextBlock Text="Всього літаків" 
+                                 FontSize="14" 
+                                 Foreground="Gray" 
+                                 HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="✈" 
+                                               FontSize="40" 
+                                               Foreground="Green"/>
+                        <TextBlock Text="{Binding ActiveAircraft}" 
+                                 FontSize="32" 
+                                 FontWeight="Bold" 
+                                 HorizontalAlignment="Center"/>
+                        <TextBlock Text="Активних літаків" 
+                                 FontSize="14" 
+                                 Foreground="Gray" 
+                                 HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="🔧" 
+                                               FontSize="40" 
+                                               Foreground="Orange"/>
+                        <TextBlock Text="{Binding MaintenanceAircraft}" 
+                                 FontSize="32" 
+                                 FontWeight="Bold" 
+                                 HorizontalAlignment="Center"/>
+                        <TextBlock Text="На обслуговуванні" 
+                                 FontSize="14" 
+                                 Foreground="Gray" 
+                                 HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="⏰" 
+                                               FontSize="40" 
+                                               Foreground="#2196F3"/>
+                        <TextBlock Text="{Binding TotalFlightHours, StringFormat='{}{0:N0}'}" 
+                                 FontSize="32" 
+                                 FontWeight="Bold" 
+                                 HorizontalAlignment="Center"/>
+                        <TextBlock Text="Налет годин" 
+                                 FontSize="14" 
+                                 Foreground="Gray" 
+                                 HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
+
+            <!-- Найближче обслуговування -->
+            <Border Grid.Row="2" Style="{StaticResource CardStyle}">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Top">
+                        <TextBlock Text="Найближче технічне обслуговування" 
+                                 FontSize="18" 
+                                 FontWeight="Medium"/>
+                        <Separator Margin="0,10,0,15"/>
+                    </StackPanel>
+                    
+                    <DataGrid ItemsSource="{Binding UpcomingMaintenance}"
+                            AutoGenerateColumns="False"
+                            IsReadOnly="True"
+                            GridLinesVisibility="Horizontal"
+                            HeadersVisibility="Column">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Борт. номер" 
+                                              Binding="{Binding RegistrationNumber}" 
+                                              Width="120"/>
+                            <DataGridTextColumn Header="Модель" 
+                                              Binding="{Binding Model}" 
+                                              Width="150"/>
+                            <DataGridTextColumn Header="Дата ТО" 
+                                              Binding="{Binding NextMaintenanceDate, StringFormat='{}{0:dd/MM/yyyy}'}" 
+                                              Width="130"/>
+                            <DataGridTextColumn Header="Розташування" 
+                                              Binding="{Binding CurrentLocation}" 
+                                              Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </Border>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

@@ -1,0 +1,155 @@
+<UserControl x:Class="AeroFleetManagerPro.Views.AnalyticsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:converters="clr-namespace:AeroFleetManagerPro.Converters">
+    
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Заголовок -->
+            <DockPanel Grid.Row="0" Margin="0,0,0,20">
+                <TextBlock Text="Аналітика флоту" 
+                         FontSize="28" 
+                         FontWeight="Bold" 
+                         VerticalAlignment="Center"
+                         Foreground="#2196F3"/>
+                
+                <Button Style="{StaticResource PrimaryButton}"
+                      Command="{Binding RefreshAnalyticsCommand}"
+                      HorizontalAlignment="Right">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="↻" Margin="0,0,5,0"/>
+                        <TextBlock Text="Оновити дані"/>
+                    </StackPanel>
+                </Button>
+            </DockPanel>
+
+            <!-- KPI метрики -->
+            <UniformGrid Grid.Row="1" Columns="3" Margin="0,0,0,20">
+                <Border Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="%" 
+                                               FontSize="30" 
+                                               Foreground="#2196F3"/>
+                        <TextBlock Text="{Binding UtilizationRate, StringFormat='{}{0:F1}%'}" 
+                                 FontSize="24" 
+                                 FontWeight="Bold" 
+                                 HorizontalAlignment="Center"/>
+                        <TextBlock Text="Використання флоту" 
+                                 FontSize="12" 
+                                 Foreground="Gray" 
+                                 HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="✈" 
+                                               FontSize="30" 
+                                               Foreground="Green"/>
+                        <TextBlock Text="{Binding TotalFlights}" 
+                                 FontSize="24" 
+                                 FontWeight="Bold" 
+                                 HorizontalAlignment="Center"/>
+                        <TextBlock Text="Всього рейсів (12міс)" 
+                                 FontSize="12" 
+                                 Foreground="Gray" 
+                                 HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="⛽" 
+                                               FontSize="30" 
+                                               Foreground="Orange"/>
+                        <TextBlock Text="{Binding AverageFuelConsumption, StringFormat='{}{0:F0} л'}" 
+                                 FontSize="24" 
+                                 FontWeight="Bold" 
+                                 HorizontalAlignment="Center"/>
+                        <TextBlock Text="Середня витрата палива" 
+                                 FontSize="12" 
+                                 Foreground="Gray" 
+                                 HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
+
+            <!-- Розподіл літаків за статусом -->
+            <Border Grid.Row="2" Style="{StaticResource CardStyle}">
+                <StackPanel>
+                    <TextBlock Text="Розподіл літаків за статусом" 
+                             FontSize="18" 
+                             FontWeight="Medium" 
+                             Margin="0,0,0,15"/>
+                    
+                    <ItemsControl ItemsSource="{Binding StatusData}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <DockPanel Margin="0,5">
+                                    <TextBlock Text="{Binding Label}" 
+                                             DockPanel.Dock="Left" 
+                                             Width="150"
+                                             VerticalAlignment="Center"/>
+                                    
+                                    <TextBlock Text="{Binding Value}" 
+                                             DockPanel.Dock="Right" 
+                                             FontWeight="Bold"
+                                             VerticalAlignment="Center"/>
+                                    
+                                    <ProgressBar Value="{Binding Value}" 
+                                               Maximum="10" 
+                                               Height="10"
+                                               Margin="10,0"/>
+                                </DockPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <!-- Розподіл літаків за виробниками -->
+            <Border Grid.Row="3" Style="{StaticResource CardStyle}">
+                <StackPanel>
+                    <TextBlock Text="Розподіл літаків за виробниками" 
+                             FontSize="18" 
+                             FontWeight="Medium" 
+                             Margin="0,0,0,15"/>
+                    
+                    <ItemsControl ItemsSource="{Binding ManufacturerData}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Margin="0,5" Padding="10">
+                                    <DockPanel>
+                                        <TextBlock Text="✈" 
+                                                               DockPanel.Dock="Left"
+                                                               FontSize="24"
+                                                               VerticalAlignment="Center"
+                                                               Margin="0,0,10,0"/>
+                                        
+                                        <TextBlock Text="{Binding Value}" 
+                                                 DockPanel.Dock="Right" 
+                                                 FontWeight="Bold"
+                                                 FontSize="18"
+                                                 VerticalAlignment="Center"/>
+                                        
+                                        <TextBlock Text="{Binding Label}" 
+                                                 FontSize="16"
+                                                 VerticalAlignment="Center"/>
+                                    </DockPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

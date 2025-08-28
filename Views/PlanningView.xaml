@@ -1,0 +1,209 @@
+<UserControl x:Class="AeroFleetManagerPro.Views.PlanningView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:converters="clr-namespace:AeroFleetManagerPro.Converters"
+             mc:Ignorable="d">
+    
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <DockPanel Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock Text="Планування рейсів" 
+                     FontSize="28" 
+                     FontWeight="Bold" 
+                     VerticalAlignment="Center"
+                     Foreground="#2196F3"/>
+            
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Style="{StaticResource PrimaryButton}"
+                      Command="{Binding AddFlightCommand}"
+                      Margin="5">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="+" Margin="0,0,5,0"/>
+                        <TextBlock Text="Додати рейс"/>
+                    </StackPanel>
+                </Button>
+                
+            </StackPanel>
+        </DockPanel>
+
+        <Border Grid.Row="1" Padding="15" Margin="0,0,0,15">
+            <StackPanel>
+                <TextBlock Text="Дата розкладу" FontWeight="Medium" Margin="0,0,0,10"/>
+                <DatePicker SelectedDate="{Binding SelectedDate, Mode=TwoWay}"
+                          Width="200"
+                          HorizontalAlignment="Left"/>
+            </StackPanel>
+        </Border>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0" Margin="0,0,10,0">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Top" Margin="20,20,20,15">
+                        <TextBlock Text="Розклад рейсів" 
+                                 FontSize="18" 
+                                 FontWeight="Medium"/>
+                        <TextBlock Text="{Binding SelectedDate, StringFormat='Розклад на {0:dddd, dd MMMM yyyy}'}"
+                                 Foreground="Gray"
+                                 Margin="0,5,0,0"/>
+                    </StackPanel>
+                    
+                    <ProgressBar DockPanel.Dock="Top"
+                               IsIndeterminate="True"
+                               Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}"
+                               Margin="20,0,20,15"/>
+                    
+                    <DataGrid ItemsSource="{Binding FlightSchedules}"
+                            SelectedItem="{Binding SelectedFlight}"
+                            AutoGenerateColumns="False"
+                            IsReadOnly="True"
+                            GridLinesVisibility="Horizontal"
+                            HeadersVisibility="Column"
+                            Margin="20,0,20,20">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Рейс №" 
+                                              Binding="{Binding FlightNumber}" 
+                                              Width="80"/>
+                            <DataGridTextColumn Header="Літак" 
+                                              Binding="{Binding Aircraft.RegistrationNumber}" 
+                                              Width="100"/>
+                            <DataGridTextColumn Header="Маршрут" Width="150">
+                                <DataGridTextColumn.Binding>
+                                    <MultiBinding StringFormat="{}{0} → {1}">
+                                        <Binding Path="Origin"/>
+                                        <Binding Path="Destination"/>
+                                    </MultiBinding>
+                                </DataGridTextColumn.Binding>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Відліт" 
+                                              Binding="{Binding DepartureTime, StringFormat='{}{0:HH:mm}'}" 
+                                              Width="80"/>
+                            <DataGridTextColumn Header="Приліт" 
+                                              Binding="{Binding ArrivalTime, StringFormat='{}{0:HH:mm}'}" 
+                                              Width="80"/>
+                            <DataGridTemplateColumn Header="Статус" Width="80">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Border Background="{Binding Status, Converter={StaticResource FlightStatusToBrushConverter}}"
+                                              CornerRadius="3"
+                                              Padding="6,2">
+                                            <TextBlock Text="{Binding Status}"
+                                                     Foreground="White"
+                                                     FontSize="10"
+                                                     HorizontalAlignment="Center"/>
+                                        </Border>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="Пасажири" 
+                                              Binding="{Binding PassengerCount}" 
+                                              Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </Border>
+
+            <Border Grid.Column="1" Margin="10,0,0,0">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="20">
+                        <TextBlock Text="Деталі рейсу" 
+                                 FontSize="18" 
+                                 FontWeight="Medium" 
+                                 Margin="0,0,0,15"/>
+                        
+                        <StackPanel Visibility="{Binding SelectedFlight, Converter={StaticResource NullToVisibilityConverter}}">
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                <Button Style="{StaticResource PrimaryButton}"
+                                      Command="{Binding EditFlightCommand}"
+                                      Margin="0,0,5,0">
+                                    <TextBlock Text="✏"/>
+                                </Button>
+                                
+                                <Button Background="White" BorderBrush="Red" BorderThickness="1" Padding="12,8"
+                                      Command="{Binding DeleteFlightCommand}"
+                                      Foreground="Red">
+                                    <TextBlock Text="🗑"/>
+                                </Button>
+                            </StackPanel>
+                            
+                            <Separator Margin="0,0,0,15"/>
+                            
+                            <TextBlock>
+                                <Run Text="Номер рейсу:" FontWeight="Medium"/>
+                                <Run Text="{Binding SelectedFlight.FlightNumber}"/>
+                            </TextBlock>
+                            
+                            <TextBlock Margin="0,8,0,0">
+                                <Run Text="Літак:" FontWeight="Medium"/>
+                                <Run Text="{Binding SelectedFlight.Aircraft.RegistrationNumber}"/>
+                                <Run Text="(" Foreground="Gray"/>
+                                <Run Text="{Binding SelectedFlight.Aircraft.Model}" Foreground="Gray"/>
+                                <Run Text=")" Foreground="Gray"/>
+                            </TextBlock>
+                            
+                            <TextBlock Margin="0,8,0,0">
+                                <Run Text="Маршрут:" FontWeight="Medium"/>
+                                <LineBreak/>
+                                <Run Text="{Binding SelectedFlight.Origin}"/>
+                                <Run Text="→"/>
+                                <Run Text="{Binding SelectedFlight.Destination}"/>
+                            </TextBlock>
+                            
+                            <TextBlock Margin="0,8,0,0">
+                                <Run Text="Розклад:" FontWeight="Medium"/>
+                                <LineBreak/>
+                                <Run Text="Відліт: "/>
+                                <Run Text="{Binding SelectedFlight.DepartureTime, StringFormat='{}{0:HH:mm}'}"/>
+                                <LineBreak/>
+                                <Run Text="Приліт: "/>
+                                <Run Text="{Binding SelectedFlight.ArrivalTime, StringFormat='{}{0:HH:mm}'}"/>
+                            </TextBlock>
+                            
+                            <TextBlock Margin="0,8,0,0">
+                                <Run Text="Пасажири:" FontWeight="Medium"/>
+                                <Run Text="{Binding SelectedFlight.PassengerCount}"/>
+                                <Run Text="/"/>
+                                <Run Text="{Binding SelectedFlight.Aircraft.PassengerCapacity}"/>
+                            </TextBlock>
+                            
+                            <TextBlock Margin="0,8,0,0">
+                                <Run Text="Вантаж:" FontWeight="Medium"/>
+                                <Run Text="{Binding SelectedFlight.CargoWeight, StringFormat='{}{0:F1} kg'}"/>
+                            </TextBlock>
+                            
+                            <TextBlock Margin="0,8,0,0">
+                                <Run Text="Паливо (орієнт.):" FontWeight="Medium"/>
+                                <Run Text="{Binding SelectedFlight.FuelConsumption, StringFormat='{}{0:F0} L'}"/>
+                            </TextBlock>
+                            
+                            <TextBlock Margin="0,8,0,0"
+                                     Visibility="{Binding SelectedFlight.Notes, Converter={StaticResource StringToVisibilityConverter}}">
+                                <Run Text="Примітки:" FontWeight="Medium"/>
+                                <LineBreak/>
+                                <Run Text="{Binding SelectedFlight.Notes}"/>
+                            </TextBlock>
+                        </StackPanel>
+                        
+                        <TextBlock Text="Оберіть рейс для перегляду деталей" 
+                                 Visibility="{Binding SelectedFlight, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=Invert}"
+                                 Foreground="Gray"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Center"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

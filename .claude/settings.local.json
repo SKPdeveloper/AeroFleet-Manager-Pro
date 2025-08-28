@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dotnet build)",
+      "Bash(dotnet build:*)",
+      "Bash(dotnet restore:*)",
+      "Bash(dotnet run)",
+      "Bash(dotnet run:*)",
+      "Bash(del \"X:\\2025_2\\work_zu\\#4-10278 система опису літаків\\Aircraft\\AeroFleet Manager Pro\\ExpandedTestData.cs\")"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
